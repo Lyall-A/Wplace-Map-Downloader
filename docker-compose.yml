@@ -3,3 +3,5 @@ services:
     build: .
     container_name: wplace-map-archiver
     restart: unless-stopped
+    volumes:
+      - ./s0:/data/s0

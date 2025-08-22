@@ -16,7 +16,10 @@ const downloadTimes = [];
 (async () => {
     for (let y = 0; y < tilesY; y++) {
         for (let x = 0; x < tilesX; x++) {
-            const tile = await downloadTile(season, x, y);
+            const filePath = path.join(downloadPath, `${filename.replace(/{x}/g, x).replace(/{y}/g, y)}.png`);
+            if (fs.existsSync(filePath)) continue; // Already downloaded
+
+            const tile = await downloadTile(season, x, y, filePath);
 
             if (tile) {
                 downloadTimes.push(tile.time);
@@ -24,16 +27,13 @@ const downloadTimes = [];
                 const averageDownloadTime = downloadTimes.reduce((acc, time) => acc + time, 0) / downloadTimes.length;
                 const completionTime = (averageDownloadTime + delay) * (tilesX - x) * (tilesY - y);
                 console.log(`Downloaded X${x} Y${y} (${tile.size}B) - Expected completion time: ${Math.floor(completionTime / 1000 / 60)} minute(s), ${Math.floor(completionTime / 1000 / 60 / 60)} hour(s)`);
+                if (delay) await setTimeout(delay);
             }
-            if (delay) await setTimeout(delay);
         }
     }
 })();
 
-function downloadTile(season, x, y) {
-    const filePath = path.join(downloadPath, `${filename.replace(/{x}/g, x).replace(/{y}/g, y)}.png`);
-    if (fs.existsSync(filePath)) return; // Already downloaded
-
+function downloadTile(season, x, y, filePath) {
     const startDate = Date.now();
     return fetch(`${baseUrl}/s${season}/tiles/${x}/${y}.png`).then(async res => {
         if (res.status === 404) return console.log(`Got ${res.status} ${res.statusText}??????`);
@@ -44,9 +44,12 @@ function downloadTile(season, x, y) {
         fs.writeFileSync(filePath, buffer);
 
         return {
+            season,
+            x,
+            y,
+            filePath,
             time: Date.now() - startDate,
-            size: buffer.length,
-            path: filePath
+            size: buffer.length
         };
     }).catch(retry);
     

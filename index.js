@@ -4,7 +4,7 @@ const { setTimeout } = require('timers/promises');
 
 const baseUrl = 'https://backend.wplace.live/files';
 const season = 0;
-const delay = 500;
+const delay = 300;
 const retryDelay = 1000;
 const downloadPath = `./s${season}`;
 const filename = 'x{x}-y{y}';
@@ -22,9 +22,10 @@ const downloadTimes = [];
                 downloadTimes.push(tile.time);
                 if (downloadTimes.length > averageSamples) downloadTimes.splice(0, downloadTimes.length - averageSamples);
                 const averageDownloadTime = downloadTimes.reduce((acc, time) => acc + time, 0) / downloadTimes.length;
-                const completionTime = averageDownloadTime * (tilesX - x) * (tilesY - y);
+                const completionTime = (averageDownloadTime + delay) * (tilesX - x) * (tilesY - y);
                 console.log(`Downloaded X${x} Y${y} (${tile.size}B) - Expected completion time: ${Math.floor(completionTime / 1000 / 60)} minute(s), ${Math.floor(completionTime / 1000 / 60 / 60)} hour(s)`);
             }
+            if (delay) await setTimeout(delay);
         }
     }
 })();
@@ -41,8 +42,6 @@ function downloadTile(season, x, y) {
 
         fs.mkdirSync(path.dirname(filePath), { recursive: true });
         fs.writeFileSync(filePath, buffer);
-
-        if (delay) await setTimeout(delay);
 
         return {
             time: Date.now() - startDate,

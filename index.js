@@ -27,8 +27,8 @@ const downloadTimes = [];
                 const averageDownloadTime = downloadTimes.reduce((acc, time) => acc + time, 0) / downloadTimes.length;
                 const completionTime = (averageDownloadTime + delay) * (tilesX - x) * (tilesY - y);
                 console.log(`Downloaded X${x} Y${y} (${tile.size}B) - Expected completion time: ${Math.floor(completionTime / 1000 / 60)} minute(s), ${Math.floor(completionTime / 1000 / 60 / 60)} hour(s)`);
-                if (delay) await setTimeout(delay);
             }
+            if (delay) await setTimeout(delay);
         }
     }
 })();

@@ -1,7 +1,7 @@
 services:
-  wplace-map-archiver:
+  wplace-map-downloader:
     build: .
-    container_name: wplace-map-archiver
+    container_name: wplace-map-downloader
     restart: unless-stopped
     volumes:
       - ./s0:/data/s0

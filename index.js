@@ -4,7 +4,8 @@ const { setTimeout } = require('timers/promises');
 
 const baseUrl = 'https://backend.wplace.live/files';
 const season = 0;
-const retryTimeout = 1000;
+const delay = 500;
+const retryDelay = 1000;
 const downloadPath = `./s${season}`;
 const filename = 'x{x}-y{y}';
 const averageSamples = 100;
@@ -23,6 +24,7 @@ const downloadTimes = [];
                 const averageDownloadTime = downloadTimes.reduce((acc, time) => acc + time, 0) / downloadTimes.length;
                 const completionTime = averageDownloadTime * (tilesX - x) * (tilesY - y);
                 console.log(`Downloaded X${x} Y${y} (${tile.size}B) - Expected completion time: ${Math.floor(completionTime / 1000 / 60)} minute(s), ${Math.floor(completionTime / 1000 / 60 / 60)} hour(s)`);
+                if (delay) await setTimeout(delay);
             }
         }
     }
@@ -48,8 +50,8 @@ function downloadTile(season, x, y) {
     }).catch(retry);
     
     async function retry(err) {    
-        console.log(`Failed to download tile X${x} Y${y}: ${err.message}. Retrying in ${Math.floor(retryTimeout / 1000)} second(s)`);
-        await setTimeout(retryTimeout);
+        console.log(`Failed to download tile X${x} Y${y}: ${err.message}. Retrying in ${Math.floor(retryDelay / 1000)} second(s)`);
+        await setTimeout(retryDelay);
         return downloadTile(season, x, y);
     }
 }

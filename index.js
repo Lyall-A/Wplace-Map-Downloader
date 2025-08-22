@@ -4,7 +4,7 @@ const { setTimeout } = require('timers/promises');
 
 const baseUrl = 'https://backend.wplace.live/files';
 const season = 0;
-const delay = 300;
+const delay = 500;
 const retryDelay = 1000;
 const downloadPath = `./s${season}`;
 const filename = 'x{x}-y{y}';

@@ -20,8 +20,9 @@ const downloadTimes = [];
             if (tile) {
                 downloadTimes.push(tile.time);
                 if (downloadTimes.length > averageSamples) downloadTimes.splice(0, downloadTimes.length - averageSamples);
-                const downloadTime = downloadTimes.reduce((acc, time) => acc + time, 0) / downloadTimes.length;
-                console.log(`Downloaded X${x} Y${y} (${tile.size}B) - Expected completion time: ${Math.floor((downloadTime * (tilesX - x) * (tilesY - y)) / 1000 / 60)} minute(s)`);
+                const averageDownloadTime = downloadTimes.reduce((acc, time) => acc + time, 0) / downloadTimes.length;
+                const completionTime = averageDownloadTime * (tilesX - x) * (tilesY - y);
+                console.log(`Downloaded X${x} Y${y} (${tile.size}B) - Expected completion time: ${Math.floor(completionTime / 1000 / 60)} minute(s), ${Math.floor(completionTime / 1000 / 60 / 60)} hour(s)`);
             }
         }
     }

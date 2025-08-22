@@ -35,6 +35,7 @@ function downloadTile(season, x, y) {
 
     const startDate = Date.now();
     return fetch(`${baseUrl}/s${season}/tiles/${x}/${y}.png`).then(async res => {
+        if (res.status === 404) return console.log(`Got ${res.status} ${res.statusText}??????`);
         if (res.status !== 200) return retry(new Error(`Got status ${res.status} ${res.statusText}`));
         const buffer = Buffer.from(await res.arrayBuffer());
 
